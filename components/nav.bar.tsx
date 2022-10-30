@@ -1,9 +1,20 @@
 import Head from "next/head";
 
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+
+import { useRecoilState } from "recoil";
+import { isLogin } from "../store/auth";
 
 const NavBar = () => {
   const router = useRouter();
+
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLogin);
+  useEffect(() => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) setIsLoggedIn(true);
+  }, [isLoggedIn]);
+
   return (
     <header>
       <Head>
@@ -21,15 +32,32 @@ const NavBar = () => {
           justifyContent: "space-between",
         }}
       >
-        <span>hi</span>
+        <a onClick={() => router.push("/")} style={{ cursor: "pointer" }}>
+          hi
+        </a>
         <div>
-          <button
-            type={"button"}
-            style={{ height: 20 }}
-            onClick={() => router.push("login")}
-          >
-            login
-          </button>
+          {!isLoggedIn ? (
+            <button
+              type={"button"}
+              style={{ height: 20 }}
+              onClick={() => router.push("login")}
+            >
+              login
+            </button>
+          ) : (
+            <button
+              type={"button"}
+              style={{ height: 20 }}
+              onClick={() => {
+                localStorage.clear();
+                setIsLoggedIn(false);
+                router.push("login");
+              }}
+            >
+              logout
+            </button>
+          )}
+
           <button
             type={"button"}
             style={{ height: 20, marginLeft: 10 }}
