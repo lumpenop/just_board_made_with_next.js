@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Auth from "../api/auth";
 import { AxiosError } from "axios";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 import { useRecoilState } from "recoil";
 import { isLogin } from "../store/auth";
 
@@ -13,12 +13,12 @@ type Inputs = {
 
 const Login = () => {
   const router = useRouter();
-  const [isLoggedIn, setIsloggedIn] = useRecoilState(isLogin);
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLogin);
 
   useLayoutEffect(() => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
-      setIsloggedIn(true);
+      setIsLoggedIn(true);
       router.push("/board");
     }
   }, []);
@@ -29,13 +29,15 @@ const Login = () => {
     formState: { errors },
   } = useForm<Inputs>({ mode: "onChange", shouldFocusError: false });
   const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
     try {
       Auth.login(data)
         .then((res) => {
+          console.log("hi");
           const { access_token } = res.data.response;
-          localStorage.setItem("access_token", access_token);
+          localStorage.setItem("access_token", `Bearer ${access_token}`);
           if (access_token) {
-            setIsloggedIn(true);
+            setIsLoggedIn(true);
             return router.push("/board");
           }
         })

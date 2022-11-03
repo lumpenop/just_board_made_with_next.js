@@ -1,14 +1,9 @@
 import React from "react";
-
-type DataType = {
-  userId: string;
-  title: string;
-  subject: string;
-};
+import { InputDataType } from "../pages/board";
 
 interface Props {
   columns: string[];
-  data: DataType[];
+  data: InputDataType[];
 }
 
 const Table = ({ columns, data }: Props) => {
@@ -22,12 +17,11 @@ const Table = ({ columns, data }: Props) => {
         </tr>
       </thead>
       <tbody>
-        {data.map(({ userId, title, subject }, index) => (
-          <tr key={userId + title}>
+        {data.map(({ nickname, input }, index) => (
+          <tr key={nickname + index}>
             <td>{index}</td>
-            <td>{userId}</td>
-            <td>{title}</td>
-            <td>{subject}</td>
+            <td>{nickname}</td>
+            <td>{input}</td>
           </tr>
         ))}
       </tbody>

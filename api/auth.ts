@@ -29,6 +29,12 @@ class Auth {
       password,
     });
   }
+
+  getUser(accessToken: string) {
+    return this.api.get("/api/users", {
+      headers: { Authorization: accessToken },
+    });
+  }
 }
 
 export default new Auth();
