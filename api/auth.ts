@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios from "axios";
 
 interface ISignUpData {
   email: string;
@@ -27,6 +27,12 @@ class Auth {
     return this.api.post("/api/users/login", {
       email,
       password,
+    });
+  }
+
+  getUser(accessToken: string) {
+    return this.api.get("/api/users", {
+      headers: { Authorization: accessToken },
     });
   }
 }

@@ -2,6 +2,9 @@ import { useRouter } from "next/router";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Auth from "../api/auth";
 import { AxiosError } from "axios";
+import { useLayoutEffect } from "react";
+import { useRecoilState } from "recoil";
+import { isLogin } from "../store/auth";
 
 type Inputs = {
   email: string;
@@ -10,18 +13,33 @@ type Inputs = {
 
 const Login = () => {
   const router = useRouter();
+  const [isLoggedIn, setIsLoggedIn] = useRecoilState(isLogin);
+
+  useLayoutEffect(() => {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      setIsLoggedIn(true);
+      router.push("/board");
+    }
+  }, []);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>({ mode: "onChange", shouldFocusError: false });
   const onSubmit: SubmitHandler<Inputs> = (data) => {
+    console.log(data);
     try {
       Auth.login(data)
         .then((res) => {
+          console.log("hi");
           const { access_token } = res.data.response;
-          console.log(access_token);
-          if (access_token) return router.push("/board");
+          localStorage.setItem("access_token", `Bearer ${access_token}`);
+          if (access_token) {
+            setIsLoggedIn(true);
+            return router.push("/board");
+          }
         })
         .catch((e) => {
           if (e instanceof AxiosError && e.response) {
@@ -34,7 +52,7 @@ const Login = () => {
       throw new Error("알 수 없는 서버 에러");
     }
   };
-
+  if (isLoggedIn) return;
   return (
     <section style={{ marginTop: 100 }}>
       <div style={{ width: "35%", margin: "0 auto" }}>

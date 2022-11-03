@@ -21,7 +21,7 @@ export const SignUp = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     try {
       Auth.signUp(data)
-        .then()
+        .then(() => console.log("hi"))
         .catch((e) => {
           if (e instanceof AxiosError && e.response) {
             const { status } = e.response;
