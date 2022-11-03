@@ -40,21 +40,23 @@ const Board = () => {
     getAccessToken().then((res) => {
       console.log(res);
       if (!res) router.push("/login");
-      try {
-        Auth.getUser(res)
-          .then((res: ResponseType) => {
-            const { nickname } = res.data.response;
-            setNickName(nickname);
-          })
-          .catch((res) => {
-            console.log("hi");
-            const { code } = res;
-            if (code === 401) {
-              console.log(code, "401");
-            }
-          });
-      } catch (e) {
-        throw Error("알 수 없는 서버 에러");
+      else {
+        try {
+          Auth.getUser(res)
+            .then((res: ResponseType) => {
+              const { nickname } = res.data.response;
+              setNickName(nickname);
+            })
+            .catch((res) => {
+              console.log("hi");
+              const { code } = res;
+              if (code === 401) {
+                console.log(code, "401");
+              }
+            });
+        } catch (e) {
+          throw Error("알 수 없는 서버 에러");
+        }
       }
     });
   }, []);
